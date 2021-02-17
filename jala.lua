@@ -50,10 +50,11 @@ root = 48
 possible_scales = {}
 scale_index = 1
 probs = {30,10,10,10,10,10,10,10}
-opt_item = 1
+opt_item = 3
 
 
 opt_items = {
+  {id = "output", label = "output", value = function() return options.OUTPUT[params:get("output")] end},
   {id = "midi_out", label = "midi out", value = function() return mdevs[params:get("midi_out")] end},
   {id = "probability", label = "prob", value = function() return params:get("probability") end},
   {id = "octaves", label = "octaves", value = function() return params:get("octaves") end},
@@ -152,7 +153,7 @@ function init()
  
   params:add_separator()
   
-  params:add{type = "option", id = "output", name = "output", default = 2,
+  params:add{type = "option", id = "output", name = "output", default = 1,
     options = options.OUTPUT,
     action = function(value)
       all_notes_off()
