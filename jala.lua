@@ -50,12 +50,13 @@ root = 48
 possible_scales = {}
 scale_index = 1
 probs = {30,10,10,10,10,10,10,10}
-opt_item = 3
+opt_item = 4
 
 
 opt_items = {
   {id = "output", label = "output", value = function() return options.OUTPUT[params:get("output")] end},
   {id = "midi_out", label = "midi out", value = function() return mdevs[params:get("midi_out")] end},
+  {id = "midi_device", label = "midi in", value = function() return mdevs[params:get("midi_device")] end},
   {id = "probability", label = "prob", value = function() return params:get("probability") end},
   {id = "octaves", label = "octaves", value = function() return params:get("octaves") end},
   {id = "step_div", label = "Steps", value = function() return params:get("step_div") end},
@@ -376,10 +377,13 @@ function key(n, z)
       -- Now, set the scale to be played
       scale = possible_scales[scale_index]
       if scale ~= nil then
-        learning = false
         probs = create_probs(#scale.intervals)
-        play = true
+      else
+        scale = MusicUtil.SCALES[1]
+        root = 48
       end
+      play = true
+      learning = false
     else
       notes = {}
       possible_scales = {}
