@@ -5,7 +5,7 @@
 --
 --   K1 - ALT
 --
---   K2 - toggle learn
+--   K2 - toggle learning mode (set MIDI in before!)
 --   K3 - press= Pause play, release= play note
 --
 --   E1 - change root
