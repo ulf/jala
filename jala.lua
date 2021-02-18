@@ -147,6 +147,9 @@ end
 -- 
 
 function init()
+  engine.amp(0.5)
+  engine.release(4)
+
   clear_midi_buffer()
   connect()
   get_midi_names()
