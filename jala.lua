@@ -449,7 +449,7 @@ function redraw()
       screen.circle(126, 5, 2)
       screen.fill()  
       screen.move(0, 7)
-      screen.text(table.concat(notes, "-"))
+      screen.text(table.concat(map(notes, function(x) return MusicUtil.NOTE_NAMES[x % 12 + 1] end), "-"))
     
       screen.move(0, 20)
       for i,s in pairs(possible_scales) do
