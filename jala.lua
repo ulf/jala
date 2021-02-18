@@ -35,13 +35,7 @@ local default_bpm = 40
 local tempo
 local learning = false
 local play = true
-
-local mute = true
-
-local midi_buffer = {}
-local midi_buffer_len = 256
-local buff_start = 1
-
+local alt = false
 
 active_notes = {}
 notes = {}
@@ -150,7 +144,6 @@ function init()
   engine.amp(0.5)
   engine.release(4)
 
-  clear_midi_buffer()
   connect()
   get_midi_names()
   print_midi_names()
@@ -249,14 +242,6 @@ function connect()
   midi_device = midi.connect(devicepos)
   midi_device.event = midi_event
   midi_out = midi.connect(outdevicepos)
-end
-
-function clear_midi_buffer()
-  midi_buffer = {}
-  for z=1,midi_buffer_len do
-    table.insert(midi_buffer, {})
-  end
-  buff_start = 1
 end
 
 function midi_event(data)
@@ -402,12 +387,31 @@ function key(n, z)
     play = true
     actualStep()
   end
+  if n == 1 and z == 1 then
+    alt = true
+  end
+  if n == 1 and z == 0 then
+    alt = false
+  end
   redraw()
 end
 
 function enc(id,delta)
   if id == 1 then
-    root = root + delta
+    if alt then
+      scale_index = scale_index + delta
+      if scale_index < 1 then
+        scale_index = 1
+      end
+      if scale_index > #possible_scales then
+        scale_index = #possible_scales
+      end
+
+      scale = possible_scales[scale_index]
+      probs = create_probs(#scale.intervals)
+    else
+      root = root + delta
+    end
   end
   if id == 2 then
     if learning then
