@@ -5,8 +5,10 @@
 --
 --   K1 - ALT
 --
---   K2 - toggle learning mode (set MIDI in before!)
---   K3 - press= Pause play, release= play note
+--   K2 - toggle learning mode
+--        (set MIDI in before!)
+--   K3 - press= Pause play
+--        release= play note
 --
 --   E1 - change root
 --   ALT E1 - change scale
@@ -368,6 +370,8 @@ function key(n, z)
         probs = create_probs(#scale.intervals)
       else
         scale = MusicUtil.SCALES[1]
+        possible_scales = MusicUtil.SCALES
+        probs = create_probs(#scale.intervals)
         root = 48
       end
       play = true
