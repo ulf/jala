@@ -1,6 +1,6 @@
 --  
 --   JALA
---   0.0.3- @ulfster
+--   0.0.4- @ulfster
 --
 --
 --   K1 - ALT
@@ -13,7 +13,9 @@
 --   E1 - change root
 --   ALT E1 - change scale
 --   E2 - select option shortcut
+--   ALT E2 - select note to edit
 --   E3 - change option value
+--   ALT E3 - change interval
 
 engine.name = 'PolyPerc'
 MusicUtil = require "musicutil"
@@ -25,6 +27,13 @@ options.OUTPUT = {"audio", "midi", "audio + midi"}
 --mxsamples=include("mx.samples/lib/mx.samples")
 --engine.name="MxSamples"
 --skeys=mxsamples:new()
+
+function table.copy(t)
+  local u = { }
+  for k, v in pairs(t) do u[k] = v end
+  return setmetatable(u, getmetatable(t))
+end
+
 
 devicepos = 1
 deviceposOut = 1
@@ -41,12 +50,13 @@ local alt = false
 
 active_notes = {}
 notes = {}
-scale = MusicUtil.SCALES[1]
+scale = table.copy(MusicUtil.SCALES[1])
 root = 48
-possible_scales = {}
+possible_scales = MusicUtil.SCALES
 scale_index = 1
 probs = {30,10,10,10,10,10,10,10}
 opt_item = 4
+edit_note = 1
 
 
 opt_items = {
@@ -365,11 +375,11 @@ function key(n, z)
   if n==2 and z == 1 then
     if learning then
       -- Now, set the scale to be played
-      scale = possible_scales[scale_index]
-      if scale ~= nil then
+      if possible_scales[scale_index] ~= nil then
+        scale = table.copy(possible_scales[scale_index])
         probs = create_probs(#scale.intervals)
       else
-        scale = MusicUtil.SCALES[1]
+        scale = table.copy(MusicUtil.SCALES[1])
         possible_scales = MusicUtil.SCALES
         probs = create_probs(#scale.intervals)
         root = 48
@@ -411,7 +421,7 @@ function enc(id,delta)
         scale_index = #possible_scales
       end
 
-      scale = possible_scales[scale_index]
+      scale = table.copy(possible_scales[scale_index])
       probs = create_probs(#scale.intervals)
     else
       root = root + delta
@@ -426,6 +436,14 @@ function enc(id,delta)
       if scale_index > #possible_scales then
         scale_index = #possible_scales
       end
+    elseif alt == true then
+      edit_note = edit_note + delta
+      if edit_note < 1 then
+        edit_note = 1
+      end
+      if edit_note > #scale.intervals then
+        edit_note = #scale.intervals
+      end
     else
       opt_item = opt_item + delta
       if opt_item < 1 then
@@ -436,7 +454,12 @@ function enc(id,delta)
     end
   end 
   if id == 3 then
-    params:delta(opt_items[opt_item].id, delta)
+    if alt == true and edit_note > 1 then
+      scale.intervals[edit_note] = scale.intervals[edit_note] + delta
+      scale.name = "Custom"
+    else  
+      params:delta(opt_items[opt_item].id, delta)
+    end 
   end
   
   redraw()
@@ -498,7 +521,7 @@ function redraw()
         width = 128 / per_row
         for i, steps in pairs(scale.intervals) do
            add = add + steps
-           local x = ((i-1) % per_row) * width
+           local x = 2 + ((i-1) % per_row) * width
            local y = 20 + math.floor((i-1) / per_row) * 20
            if active_notes[root + steps] ~= nil and active_notes[root + steps] > 0 then
              screen.level(15)
@@ -511,6 +534,12 @@ function redraw()
 --           screen.text(probs[i] .. "%")
            screen.rect(x, y + 3, math.ceil(probs[i] / 2), 2)
            screen.fill()
+
+            if alt == true and edit_note == i then
+              screen.rect(x-1, y-6, width-5, 14)
+             screen.stroke()
+
+            end
 
         end
       end
