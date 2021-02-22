@@ -73,7 +73,7 @@ opt_items = {
 function all_notes_off()
   if (params:get("output") == 2 or params:get("output") == 3) then
     for i, _ in pairs(active_notes) do
-      midi_out:note_off(i, nil, midi_out_channel)
+      midi_out:note_off(i, nil, params:get("midi_out_channel"))
     end
   end
   active_notes = {}
@@ -118,7 +118,7 @@ function actualStep()
   end
   -- MIDI out
   if (params:get("output") == 2 or params:get("output") == 3) then
-    midi_out:note_on(note_num, 96, midi_out_channel)
+    midi_out:note_on(note_num, 96, params:get("midi_out_channel"))
   end
 end
 
@@ -128,7 +128,7 @@ function step()
     check_notes = active_notes
     for n, d in pairs(active_notes) do
       if d == 0  then
-        midi_out:note_off(n, midi_out_channel)
+        midi_out:note_off(n, params:get("midi_out_channel"))
         if params:get("output") == 4 then
           skeys:off({name="cello",midi=n})
         end
@@ -215,6 +215,9 @@ function init()
       print ("midiout ".. devicepos .." selected: " .. mdevs[deviceposOut])
       
     end}
+
+  params:add{type = "number", id = "midi_out_channel", name = "midi_out_channel",
+    min = 1, max = 16, default = 1,}
 
   midi_device = midi.connect(devicepos)
   midi_out = midi.connect(deviceposOut)
