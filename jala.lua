@@ -1,6 +1,6 @@
 --  
 --   JALA
---   0.0.5- @ulfster
+--   0.0.4- @ulfster
 --
 --
 --   K1 - ALT
@@ -185,10 +185,10 @@ function init()
     min = 1, max = 16, default = 4,}
 
   params:add{type = "number", id = "velocity_min", name = "velocity_min",
-             min = 1, max = 127, default = 96,}
+             min = 1, max = 128, default = 96,}
 
   params:add{type = "number", id = "velocity_max", name = "velocity_max",
-             min = 1, max = 127 default = 96,}
+             min = 1, max = 128, default = 96,}
 
   params:add{type = "number", id = "octaves", name = "octaves",
     min = 1, max = 4, default = 1,}
@@ -533,6 +533,8 @@ function redraw()
         per_row = math.ceil(#scale.intervals / 2)
         width = 128 / per_row
         for i, steps in pairs(scale.intervals) do
+           local level = math.floor((root + steps) / 12) - 1
+
            add = add + steps
            local x = 2 + ((i-1) % per_row) * width
            local y = 20 + math.floor((i-1) / per_row) * 20
@@ -542,7 +544,7 @@ function redraw()
              screen.level(1)
            end  
            screen.move(x, y)
-           screen.text(MusicUtil.NOTE_NAMES[(root + steps) % 12 + 1])
+           screen.text(MusicUtil.NOTE_NAMES[(root + steps) % 12 + 1] .. level)
 --           screen.move(x, y + 9)
 --           screen.text(probs[i] .. "%")
            screen.rect(x, y + 3, math.ceil(probs[i] / 2), 2)
