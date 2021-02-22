@@ -1,6 +1,6 @@
 --  
 --   JALA
---   0.0.4- @ulfster
+--   0.0.5- @ulfster
 --
 --
 --   K1 - ALT
@@ -68,6 +68,8 @@ opt_items = {
   {id = "step_div", label = "Steps", value = function() return params:get("step_div") end},
   {id = "note_length_min", label = "min length", value = function() return params:get("note_length_min") end},
   {id = "note_length_max", label = "max length", value = function() return params:get("note_length_max") end},
+  {id = "velocity_min", label = "min velocity", value = function() return params:get("velocity_min") end},
+  {id = "velocity_max", label = "max velocity", value = function() return params:get("velocity_max") end},
 }
 
 function all_notes_off()
@@ -118,7 +120,9 @@ function actualStep()
   end
   -- MIDI out
   if (params:get("output") == 2 or params:get("output") == 3) then
-    midi_out:note_on(note_num, 96, params:get("midi_out_channel"))
+    local velocity = math.random(math.min(params:get("velocity_min"), params:get("velocity_max")),
+                params:get("velocity_max"))
+    midi_out:note_on(note_num, velocity, params:get("midi_out_channel"))
   end
 end
 
@@ -179,6 +183,12 @@ function init()
 
   params:add{type = "number", id = "note_length_max", name = "note_length_max",
     min = 1, max = 16, default = 4,}
+
+  params:add{type = "number", id = "velocity_min", name = "velocity_min",
+             min = 1, max = 127, default = 96,}
+
+  params:add{type = "number", id = "velocity_max", name = "velocity_max",
+             min = 1, max = 127 default = 96,}
 
   params:add{type = "number", id = "octaves", name = "octaves",
     min = 1, max = 4, default = 1,}
