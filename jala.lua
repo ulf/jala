@@ -468,8 +468,10 @@ function enc(id,delta)
   end 
   if id == 3 then
     if alt == true and edit_note > 1 then
+      if scale.name ~= "Custom" then
+        scale = { name = "Custom", intervals = table.copy(scale.intervals) }
+      end
       scale.intervals[edit_note] = scale.intervals[edit_note] + delta
-      scale.name = "Custom"
     else  
       params:delta(opt_items[opt_item].id, delta)
     end 
