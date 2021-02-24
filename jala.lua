@@ -88,7 +88,7 @@ function actualStep()
   local r = math.random(100)
   local sum = 0
   local i = 1
-  while sum < r do
+  while sum < r and i <= #scale.intervals do
     sum = sum + probs[i]
     i = i+1
   end
