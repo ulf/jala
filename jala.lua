@@ -132,7 +132,7 @@ function step()
     check_notes = active_notes
     for n, d in pairs(active_notes) do
       if d == 0  then
-        midi_out:note_off(n, params:get("midi_out_channel"))
+        midi_out:note_off(n, nil, params:get("midi_out_channel"))
         if params:get("output") == 4 then
           skeys:off({name="cello",midi=n})
         end
