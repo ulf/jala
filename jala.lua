@@ -1,6 +1,6 @@
 --  
 --   JALA
---   0.0.6- @ulfster
+--   0.0.7- @ulfster
 --
 --
 --   K1 - ALT
@@ -61,6 +61,7 @@ edit_note = 1
 
 opt_items = {
   {id = "output", label = "output", value = function() return options.OUTPUT[params:get("output")] end},
+  {id = "clock_tempo", label = "bpm", value = function() return params:get("clock_tempo") end},
   {id = "midi_out", label = "midi out", value = function() return mdevs[params:get("midi_out")] end},
   {id = "midi_device", label = "midi in", value = function() return mdevs[params:get("midi_device")] end},
   {id = "probability", label = "prob", value = function() return params:get("probability") end},
